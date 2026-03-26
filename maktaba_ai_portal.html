@@ -1,0 +1,449 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.app{max-width:700px;margin:0 auto;padding:1.5rem 1rem;font-family:var(--font-sans)}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.header h1{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.streak-badge{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--color-text-secondary);background:var(--color-background-secondary);padding:5px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)}
+.streak-num{font-weight:500;color:#BA7517;font-size:15px}
+.progress-wrap{height:3px;background:var(--color-background-secondary);border-radius:2px;margin-bottom:1.25rem}
+.progress-fill{height:3px;border-radius:2px;background:#1D9E75;transition:width .4s}
+.tabs{display:flex;gap:8px;margin-bottom:1.25rem}
+.tab{font-size:13px;padding:5px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:transparent;color:var(--color-text-secondary);cursor:pointer;font-family:var(--font-sans)}
+.tab.active{background:var(--color-background-secondary);color:var(--color-text-primary);font-weight:500;border-color:var(--color-border-secondary)}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1rem}
+.badge{display:inline-block;font-size:11px;padding:2px 9px;border-radius:99px;font-weight:500;margin-bottom:.75rem}
+.bq{background:#E1F5EE;color:#085041}.bs{background:#E6F1FB;color:#0C447C}.bc{background:#EEEDFE;color:#3C3489}.bf{background:#FAEEDA;color:#633806}.bh{background:#F1EFE8;color:#444441}.bg{background:#EAF3DE;color:#27500A}
+.unit-title{font-size:17px;font-weight:500;color:var(--color-text-primary);margin-bottom:.35rem;line-height:1.4}
+.unit-meta{font-size:12px;color:var(--color-text-tertiary);margin-bottom:1rem}
+.ayah-block{direction:rtl;text-align:right;font-size:20px;line-height:2;padding:.75rem 1rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);border-right:3px solid #1D9E75;margin-bottom:.6rem;color:var(--color-text-primary)}
+.ayah-tr{font-size:14px;color:var(--color-text-secondary);line-height:1.7;font-style:italic;margin-bottom:.4rem}
+.ayah-ref{font-size:12px;color:var(--color-text-tertiary);margin-bottom:1rem}
+.body-text{font-size:15px;color:var(--color-text-secondary);line-height:1.8}
+.body-text p{margin-bottom:.75rem}
+.body-text p:last-child{margin-bottom:0}
+.section-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-tertiary);margin-bottom:.5rem}
+.capture-input{width:100%;font-size:14px;padding:9px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);resize:none;font-family:var(--font-sans);line-height:1.5}
+.capture-input:focus{outline:none;border-color:#1D9E75}
+.btn-row{display:flex;gap:8px;margin-top:.75rem}
+.btn{font-size:13px;padding:7px 16px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-primary);cursor:pointer;font-family:var(--font-sans)}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-primary{background:#0F6E56;color:#E1F5EE;border-color:#0F6E56}
+.btn-primary:hover{background:#085041}
+.btn-sm{font-size:12px;padding:5px 12px}
+.loading{text-align:center;padding:2.5rem 1rem}
+.loading-spinner{width:28px;height:28px;border:2px solid var(--color-border-tertiary);border-top-color:#1D9E75;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:14px;color:var(--color-text-secondary)}
+.loading-sub{font-size:12px;color:var(--color-text-tertiary);margin-top:.35rem}
+.done-box{text-align:center;padding:2rem 1rem}
+.done-check{width:40px;height:40px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;color:#085041;font-size:18px}
+.done-title{font-size:16px;font-weight:500;color:var(--color-text-primary);margin-bottom:.4rem}
+.done-sub{font-size:14px;color:var(--color-text-secondary);margin-bottom:.25rem}
+.done-capture{font-size:13px;color:var(--color-text-tertiary);font-style:italic;margin-top:.5rem}
+.history-item{padding:.85rem 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.history-item:last-child{border-bottom:none}
+.history-date{font-size:11px;color:var(--color-text-tertiary);margin-bottom:3px}
+.history-topic{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.history-note{font-size:13px;color:var(--color-text-secondary);font-style:italic}
+.empty{font-size:14px;color:var(--color-text-tertiary);text-align:center;padding:2rem 0}
+.settings-row{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem}
+.settings-label{font-size:13px;color:var(--color-text-secondary)}
+.settings-input{font-size:13px;padding:8px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);font-family:var(--font-sans);width:100%}
+.settings-input:focus{outline:none;border-color:#1D9E75}
+.error-box{background:#FCEBEB;border:0.5px solid #F09595;border-radius:var(--border-radius-md);padding:.75rem 1rem;font-size:13px;color:#501313;margin-bottom:1rem}
+.info-box{background:#E1F5EE;border:0.5px solid #5DCAA5;border-radius:var(--border-radius-md);padding:.75rem 1rem;font-size:13px;color:#04342C;margin-bottom:1rem}
+.world-item{padding:.85rem 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.world-item:last-child{border-bottom:none}
+.world-topic{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:.35rem}
+.world-body{font-size:13px;color:var(--color-text-secondary);line-height:1.7}
+.reflection-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.85rem 1rem;font-size:14px;color:var(--color-text-secondary);line-height:1.75;margin-top:1rem;border-left:3px solid #1D9E75}
+.separator{height:0.5px;background:var(--color-border-tertiary);margin:1rem 0}
+</style>
+
+<div class="app">
+  <div class="header">
+    <h1>Maktaba</h1>
+    <div class="streak-badge"><span class="streak-num" id="streakNum">0</span><span>day streak</span></div>
+  </div>
+  <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('today',this)">Today</button>
+    <button class="tab" onclick="showTab('world',this)">World</button>
+    <button class="tab" onclick="showTab('history',this)">History</button>
+    <button class="tab" onclick="showTab('settings',this)">Settings</button>
+  </div>
+
+  <div id="tab-today">
+    <div id="mainContent"></div>
+    <div id="captureSection" style="display:none" class="card">
+      <div class="section-label">Your takeaway — one sentence</div>
+      <textarea class="capture-input" id="captureInput" rows="2" placeholder="What will you carry from this?"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="markDone(true)">Save & mark done</button>
+        <button class="btn" onclick="markDone(false)">Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-world" style="display:none">
+    <div id="worldContent"></div>
+  </div>
+
+  <div id="tab-history" style="display:none">
+    <div class="card"><div class="section-label">Past sessions</div><div id="historyList"></div></div>
+  </div>
+
+  <div id="tab-settings" style="display:none">
+    <div class="card">
+      <div class="section-label" style="margin-bottom:.85rem">API configuration</div>
+      <div class="settings-row">
+        <div class="settings-label">Anthropic API key</div>
+        <input type="password" class="settings-input" id="apiKeyInput" placeholder="sk-ant-...">
+      </div>
+      <div id="settingsMsg"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveKey()">Save key</button>
+        <button class="btn" onclick="clearKey()">Clear</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-label" style="margin-bottom:.5rem">Your profile</div>
+      <div class="body-text" style="font-size:13px">
+        <p><strong>Madhab:</strong> Hanafi</p>
+        <p><strong>Islamic focus:</strong> Quran &amp; tafsir, Seerah, Companions, Fiqh, Islamic history</p>
+        <p><strong>Other interests:</strong> Geopolitics, Technology &amp; AI, History &amp; civilisations, Philosophy</p>
+        <p><strong>Tone:</strong> Mixed — varies by topic</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-label" style="margin-bottom:.5rem">Data</div>
+      <div class="btn-row">
+        <button class="btn btn-sm" onclick="resetStreak()">Reset streak</button>
+        <button class="btn btn-sm" onclick="clearHistory()">Clear history</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PROFILE = {
+  madhab: 'Hanafi',
+  islamicFocus: ['Quran & tafsir','Seerah of the Prophet','Companions & early Muslims','Fiqh & practical rulings','Islamic history & civilisation'],
+  otherInterests: ['Geopolitics & world affairs','Technology & AI','History & civilisations','Philosophy & ideas'],
+  tone: 'Mixed — varies by topic'
+};
+
+const ROTATION = ['quran','seerah','companions','fiqh','islamic_history'];
+const BADGE = {quran:'bq',seerah:'bs',companions:'bc',fiqh:'bf',islamic_history:'bh'};
+const BADGE_LABEL = {quran:'Quran & Tafsir',seerah:'Seerah',companions:'Companions',fiqh:'Fiqh — Hanafi',islamic_history:'Islamic History'};
+
+function getState(){
+  try{const s=localStorage.getItem('maktaba2');return s?JSON.parse(s):{streak:0,lastDate:null,rotIndex:0,history:[],todayDone:false,todayCapture:'',todayUnit:null,todayWorldItems:null};}
+  catch(e){return {streak:0,lastDate:null,rotIndex:0,history:[],todayDone:false,todayCapture:'',todayUnit:null,todayWorldItems:null};}
+}
+function saveState(){try{localStorage.setItem('maktaba2',JSON.stringify(ST));}catch(e){}}
+function getKey(){try{return localStorage.getItem('maktaba_key')||'';}catch(e){return '';}}
+function setKey(k){try{localStorage.setItem('maktaba_key',k);}catch(e){}}
+
+let ST = getState();
+
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function fmtDate(s){const d=new Date(s.replace(/-/g,'/'));return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]+', '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getDate();}
+
+function checkDay(){
+  const today=todayStr();
+  if(ST.lastDate===today) return;
+  const yest=new Date();yest.setDate(yest.getDate()-1);
+  const ys=yest.getFullYear()+'-'+(yest.getMonth()+1)+'-'+yest.getDate();
+  if(ST.lastDate!==ys){ST.streak=0;}
+  ST.todayDone=false;ST.todayCapture='';ST.todayUnit=null;ST.todayWorldItems=null;
+  saveState();
+}
+checkDay();
+
+function showTab(name,el){
+  ['today','world','history','settings'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display='none';
+  });
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).style.display='block';
+  el.classList.add('active');
+  if(name==='history') renderHistory();
+  if(name==='world') renderWorld();
+  if(name==='settings') renderSettings();
+}
+
+function updateMeta(){
+  document.getElementById('streakNum').textContent=ST.streak||0;
+  const pct=Math.round(((ST.rotIndex%ROTATION.length)/ROTATION.length)*100);
+  document.getElementById('progressFill').style.width=pct+'%';
+}
+
+function renderSettings(){
+  const k=getKey();
+  document.getElementById('apiKeyInput').value=k?'sk-ant-...'+k.slice(-4):'';
+  document.getElementById('settingsMsg').innerHTML='';
+}
+
+function saveKey(){
+  const v=document.getElementById('apiKeyInput').value.trim();
+  if(!v||v.startsWith('sk-ant-...')){
+    document.getElementById('settingsMsg').innerHTML='<div class="error-box">Please paste your full API key.</div>';return;
+  }
+  setKey(v);
+  document.getElementById('settingsMsg').innerHTML='<div class="info-box">Key saved. Go to Today to load your first unit.</div>';
+  document.getElementById('apiKeyInput').value='sk-ant-...'+v.slice(-4);
+}
+
+function clearKey(){setKey('');document.getElementById('apiKeyInput').value='';document.getElementById('settingsMsg').innerHTML='<div class="info-box">Key cleared.</div>';}
+function resetStreak(){ST.streak=0;saveState();updateMeta();}
+function clearHistory(){ST.history=[];saveState();alert('History cleared.');}
+
+async function callClaude(prompt, systemPrompt){
+  const key=getKey();
+  if(!key) throw new Error('NO_KEY');
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,system:systemPrompt,messages:[{role:'user',content:prompt}]})
+  });
+  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error');}
+  const data=await res.json();
+  return data.content[0].text;
+}
+
+function getSystemPrompt(){
+  return `You are a personalised Islamic learning assistant for a Muslim learner with the following profile:
+- Madhab: Hanafi
+- Islamic focus areas: Quran & tafsir (thematic, multiple ayahs per concept), Seerah of the Prophet ﷺ, Companions & early Muslims, Fiqh (Hanafi), Islamic history & civilisation
+- Other intellectual interests: Geopolitics & world affairs, Technology & AI, History & civilisations, Philosophy & ideas
+- Tone preference: Mixed — scholarly and rigorous for Fiqh, warm and narrative for Seerah and Companions, reflective and meaning-focused for Quran, analytical for history
+- Attention span: Short to medium. Content must be engaging from the first sentence.
+- Goal: Build genuine foundational understanding, not surface familiarity.
+
+Always respond in valid JSON only. No markdown, no preamble, no explanation outside the JSON.`;
+}
+
+async function loadTodayUnit(){
+  const type=ROTATION[ST.rotIndex%ROTATION.length];
+  const mc=document.getElementById('mainContent');
+
+  mc.innerHTML=`<div class="card"><div class="loading"><div class="loading-spinner"></div><div class="loading-text">Generating today's ${BADGE_LABEL[type]} unit...</div><div class="loading-sub">Tailored for you</div></div></div>`;
+  document.getElementById('captureSection').style.display='none';
+
+  const usedTopics=ST.history.slice(0,20).filter(h=>h.type===type).map(h=>h.topic).join(', ');
+
+  let prompt='';
+  if(type==='quran'){
+    prompt=`Generate a thematic Quran unit. Pick a theme relevant to a modern Muslim navigating life — something with genuine depth. Avoid generic topics. Avoid these recently covered themes: ${usedTopics||'none'}.
+
+Return JSON:
+{
+  "topic": "theme name",
+  "ayahs": [
+    {"arabic": "arabic text", "translation": "english translation", "ref": "Surah Name X:Y"},
+    {"arabic": "...", "translation": "...", "ref": "..."}
+  ],
+  "tafsir": "2-3 paragraphs. Explain the concept through the lens of classical tafsir (Ibn Kathir, Al-Qurtubi, or similar). Connect to the Hanafi tradition where relevant. End with one practical reflection — not preachy, just honest.",
+  "reflection": "One sentence that cuts to the heart of why this matters today."
+}`;
+  } else if(type==='seerah'){
+    prompt=`Generate a Seerah unit — a specific episode, moment, or turning point from the life of the Prophet ﷺ. Make it vivid and human. Avoid generic summaries. Avoid these recent topics: ${usedTopics||'none'}.
+
+Return JSON:
+{
+  "topic": "episode title",
+  "period": "e.g. Makkan period, Year 5 of Hijra",
+  "body": "3-4 paragraphs. Narrative, humanising, specific. Include authentic details — names, places, context. Draw a clear lesson at the end without moralising.",
+  "reflection": "One sentence connecting this episode to a modern human experience."
+}`;
+  } else if(type==='companions'){
+    prompt=`Generate a unit on a Companion (Sahabi or Sahabiyyah) of the Prophet ﷺ. Choose someone with depth — not always the most famous. Avoid these recent topics: ${usedTopics||'none'}.
+
+Return JSON:
+{
+  "topic": "Name — short descriptor",
+  "companion": "full name",
+  "era": "which period of Islamic history",
+  "body": "3-4 paragraphs. Cover their background, their relationship to the Prophet ﷺ, a defining moment or quality, and their legacy. Be specific and human.",
+  "reflection": "One sentence on what this person's life teaches a modern Muslim."
+}`;
+  } else if(type==='fiqh'){
+    prompt=`Generate a Hanafi Fiqh unit. Pick a ruling or concept that a practicing Muslim actually encounters. Make the reasoning transparent — not just the ruling but why. Avoid these recent topics: ${usedTopics||'none'}.
+
+Return JSON:
+{
+  "topic": "ruling or concept title",
+  "category": "e.g. Salah, Tahara, Transactions, Family law",
+  "body": "3-4 paragraphs. State the Hanafi position clearly. Explain the usul (legal reasoning) behind it. Note where it differs from other madhabs if significant. End with practical application.",
+  "reflection": "One sentence on why understanding this ruling matters beyond mere compliance."
+}`;
+  } else {
+    prompt=`Generate an Islamic history & civilisation unit. Pick a specific era, event, institution, or figure from Islamic history. Connect to the broader sweep of civilisation — not just religious history. Avoid these recent topics: ${usedTopics||'none'}.
+
+Return JSON:
+{
+  "topic": "title",
+  "era": "time period",
+  "body": "3-4 paragraphs. Analytical and contextual. Draw connections to geopolitics, philosophy, or ideas where relevant — this learner has broad intellectual interests. Be specific, not encyclopaedic.",
+  "reflection": "One sentence connecting this history to the present world."
+}`;
+  }
+
+  try {
+    const raw=await callClaude(prompt,getSystemPrompt());
+    let unit;
+    try{unit=JSON.parse(raw);}
+    catch(e){const m=raw.match(/\{[\s\S]*\}/);if(m)unit=JSON.parse(m[0]);else throw new Error('Bad JSON');}
+    unit.type=type;
+    ST.todayUnit=unit;
+    saveState();
+    renderUnit(unit);
+  } catch(err){
+    if(err.message==='NO_KEY'){
+      mc.innerHTML=`<div class="card"><div class="info-box" style="margin-bottom:0">Add your Anthropic API key in <strong>Settings</strong> to get started.</div></div>`;
+    } else {
+      mc.innerHTML=`<div class="card"><div class="error-box" style="margin-bottom:0">Error: ${err.message}</div><div class="btn-row" style="margin-top:.75rem"><button class="btn" onclick="loadTodayUnit()">Retry</button></div></div>`;
+    }
+  }
+}
+
+function renderUnit(unit){
+  const mc=document.getElementById('mainContent');
+  const type=unit.type;
+  let html=`<div class="card">`;
+  html+=`<span class="badge ${BADGE[type]}">${BADGE_LABEL[type]}</span>`;
+  html+=`<div class="unit-title">${unit.topic}</div>`;
+  if(unit.period||unit.era||unit.category) html+=`<div class="unit-meta">${unit.period||unit.era||unit.category||''}</div>`;
+
+  if(type==='quran'&&unit.ayahs){
+    unit.ayahs.forEach(a=>{
+      html+=`<div class="ayah-block">${a.arabic}</div>`;
+      html+=`<div class="ayah-tr">${a.translation}</div>`;
+      html+=`<div class="ayah-ref">${a.ref}</div>`;
+    });
+    html+=`<div class="separator"></div>`;
+    html+=`<div class="body-text">${unit.tafsir.split('\n').filter(p=>p.trim()).map(p=>`<p>${p}</p>`).join('')}</div>`;
+  } else if(unit.body){
+    html+=`<div class="body-text">${unit.body.split('\n').filter(p=>p.trim()).map(p=>`<p>${p}</p>`).join('')}</div>`;
+  }
+
+  if(unit.reflection){
+    html+=`<div class="reflection-box">${unit.reflection}</div>`;
+  }
+  html+=`</div>`;
+  mc.innerHTML=html;
+  document.getElementById('captureSection').style.display='block';
+  document.getElementById('captureInput').value='';
+}
+
+function markDone(withCapture){
+  const capture=withCapture?document.getElementById('captureInput').value.trim():'';
+  const unit=ST.todayUnit;
+  if(!unit) return;
+  ST.history.unshift({date:todayStr(),type:unit.type,topic:unit.topic,capture:capture});
+  ST.todayDone=true;
+  ST.todayCapture=capture;
+  ST.lastDate=todayStr();
+  ST.streak=(ST.streak||0)+1;
+  ST.rotIndex=ST.rotIndex+1;
+  saveState();
+  updateMeta();
+
+  const mc=document.getElementById('mainContent');
+  const next=BADGE_LABEL[ROTATION[ST.rotIndex%ROTATION.length]];
+  mc.innerHTML=`<div class="card"><div class="done-box">
+    <div class="done-check">&#10003;</div>
+    <div class="done-title">Done for today</div>
+    <div class="done-sub">Streak: ${ST.streak} day${ST.streak!==1?'s':''}</div>
+    ${capture?`<div class="done-capture">"${capture}"</div>`:''}
+    <div class="done-sub" style="margin-top:.75rem;font-size:12px;color:var(--color-text-tertiary)">Tomorrow: ${next}</div>
+  </div></div>`;
+  document.getElementById('captureSection').style.display='none';
+}
+
+async function renderWorld(){
+  const wc=document.getElementById('worldContent');
+  if(ST.todayWorldItems){
+    displayWorldItems(ST.todayWorldItems);return;
+  }
+  wc.innerHTML=`<div class="card"><div class="loading"><div class="loading-spinner"></div><div class="loading-text">Generating today's world digest...</div><div class="loading-sub">Filtered for your interests</div></div></div>`;
+
+  const prompt=`Generate a focused daily digest for someone interested in: Geopolitics & world affairs, Technology & AI, History & civilisations, Philosophy & ideas.
+
+Pick 3 genuinely interesting ideas, developments, or angles — not generic news summaries. Each should be intellectually substantive. One must connect in some way to Islamic civilisation, history, or the Muslim world.
+
+Return JSON:
+{
+  "items": [
+    {
+      "area": "topic area",
+      "title": "punchy title",
+      "body": "2-3 sentences. Specific, analytical, not vague. Why does this matter?"
+    }
+  ]
+}`;
+
+  try{
+    const raw=await callClaude(prompt,getSystemPrompt());
+    let data;
+    try{data=JSON.parse(raw);}
+    catch(e){const m=raw.match(/\{[\s\S]*\}/);if(m)data=JSON.parse(m[0]);else throw new Error('Bad JSON');}
+    ST.todayWorldItems=data.items;
+    saveState();
+    displayWorldItems(data.items);
+  }catch(err){
+    if(err.message==='NO_KEY'){
+      wc.innerHTML=`<div class="card"><div class="info-box" style="margin-bottom:0">Add your API key in <strong>Settings</strong> first.</div></div>`;
+    } else {
+      wc.innerHTML=`<div class="card"><div class="error-box" style="margin-bottom:0">Error: ${err.message}</div><div class="btn-row" style="margin-top:.75rem"><button class="btn" onclick="renderWorld()">Retry</button></div></div>`;
+    }
+  }
+}
+
+function displayWorldItems(items){
+  const wc=document.getElementById('worldContent');
+  const AREA_BADGE={
+    'Geopolitics & world affairs':'bs','Technology & AI':'bg','History & civilisations':'bh','Philosophy & ideas':'bc'
+  };
+  let html=`<div class="card"><div class="section-label" style="margin-bottom:.5rem">Today's digest — 3 things worth knowing</div>`;
+  items.forEach(item=>{
+    const bc=AREA_BADGE[item.area]||'bh';
+    html+=`<div class="world-item"><span class="badge ${bc}" style="margin-bottom:.4rem">${item.area}</span><div class="world-topic">${item.title}</div><div class="world-body">${item.body}</div></div>`;
+  });
+  html+=`</div>`;
+  wc.innerHTML=html;
+}
+
+function renderHistory(){
+  const list=document.getElementById('historyList');
+  if(!ST.history||ST.history.length===0){
+    list.innerHTML='<div class="empty">No sessions yet</div>';return;
+  }
+  list.innerHTML=ST.history.map(h=>`
+    <div class="history-item">
+      <div class="history-date">${fmtDate(h.date)} &middot; <span class="badge ${BADGE[h.type]||'bh'}" style="font-size:10px;padding:1px 7px">${BADGE_LABEL[h.type]||h.type}</span></div>
+      <div class="history-topic">${h.topic}</div>
+      ${h.capture?`<div class="history-note">"${h.capture}"</div>`:''}
+    </div>`).join('');
+}
+
+updateMeta();
+
+if(!ST.todayDone){
+  if(ST.todayUnit){renderUnit(ST.todayUnit);document.getElementById('captureSection').style.display='block';}
+  else{loadTodayUnit();}
+} else {
+  const next=BADGE_LABEL[ROTATION[ST.rotIndex%ROTATION.length]];
+  document.getElementById('mainContent').innerHTML=`<div class="card"><div class="done-box">
+    <div class="done-check">&#10003;</div>
+    <div class="done-title">Done for today</div>
+    <div class="done-sub">Streak: ${ST.streak} day${ST.streak!==1?'s':''}</div>
+    ${ST.todayCapture?`<div class="done-capture">"${ST.todayCapture}"</div>`:''}
+    <div class="done-sub" style="margin-top:.75rem;font-size:12px;color:var(--color-text-tertiary)">Tomorrow: ${next}</div>
+  </div></div>`;
+  document.getElementById('captureSection').style.display='none';
+}
+</script>
